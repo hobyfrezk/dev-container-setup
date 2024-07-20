@@ -7,6 +7,7 @@ RUN apt-get update \
 	golang \
 	sudo \
 	vim \
+	neovim \
 	wget \
 	&& rm -rf /var/lib/apt/lists/*
 
