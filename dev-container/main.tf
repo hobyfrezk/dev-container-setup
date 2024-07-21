@@ -46,7 +46,11 @@ resource "coder_agent" "main" {
     git clone https://github.com/hobyfrezk/dotfiles.git ~/.dotfiles
 
     if [ -f ~/.bashrc ]; then mv ~/.bashrc ~/.bashrc.backup; fi && \
-    ln -sf ~/.dotfiles/.bashrc ~/.bashrc
+    ln -sf ~/.dotfiles/bashrc ~/.bashrc
+    ln -sf ~/.dotfiles/p10k.zsh ~/.p10k.zsh
+    ln -sf ~/.dotfiles/zshrc ~/.zshrc
+
+    ln -s ~/.dotfiles/nvim ~/.config/nvim
   EOT
 
   # These environment variables allow you to make Git commits right away after creating a
@@ -227,3 +231,4 @@ resource "docker_container" "workspace" {
     value = data.coder_workspace.me.name
   }
 }
+
