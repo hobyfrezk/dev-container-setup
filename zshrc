@@ -85,6 +85,10 @@ source $ZSH/oh-my-zsh.sh
 
 # export MANPATH="/usr/local/man:$MANPATH"
 
+if [[ -f ~/.dotfiles/.dircolors ]] ; then
+    eval $(dircolors -b ~/.dotfiles/.dircolors)
+fi
+
 # You may need to manually set your language environment
 # export LANG=en_US.UTF-8
 
