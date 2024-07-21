@@ -5,3 +5,5 @@
 vim.opt.wrap = true
 
 vim.g.autoformat = false
+
+vim.opt.shell = "/usr/bin/zsh"
