@@ -42,15 +42,26 @@ resource "coder_agent" "main" {
     git clone --depth=1 https://github.com/Bash-it/bash-it.git ~/.bash_it \
     && ~/.bash_it/install.sh --silent --no-modify-config
 
+    # Install Oh My Zsh
+    yes | sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+
+    # Install Powerlevel10k theme
+    git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/.powerlevel10k
+    rm -rf ~/.powerlevel10k/.git
+
     # Clone the dotfiles repository
     git clone https://github.com/hobyfrezk/dotfiles.git ~/.dotfiles
 
     if [ -f ~/.bashrc ]; then mv ~/.bashrc ~/.bashrc.backup; fi && \
     ln -sf ~/.dotfiles/bashrc ~/.bashrc
+
     ln -sf ~/.dotfiles/p10k.zsh ~/.p10k.zsh
     ln -sf ~/.dotfiles/zshrc ~/.zshrc
 
     ln -s ~/.dotfiles/nvim ~/.config/nvim
+
+    # Set zsh as the default shell
+    sudo chsh -s $(which zsh) $(whoami)
   EOT
 
   # These environment variables allow you to make Git commits right away after creating a
@@ -195,7 +206,16 @@ resource "docker_container" "workspace" {
   # Hostname makes the shell more user friendly: coder@my-workspace:~$
   hostname = data.coder_workspace.me.name
   # Use the docker gateway if the access URL is 127.0.0.1
-  entrypoint = ["sh", "-c", replace(coder_agent.main.init_script, "/localhost|127\\.0\\.0\\.1/", "host.docker.internal")]
+  # change USERNAME to real user name
+  entrypoint = [
+    "sh", 
+    "-c", 
+    replace(
+      coder_agent.main.init_script, 
+      "/localhost|127\\.0\\.0\\.1/", 
+      "host.docker.internal"
+    ), 
+  ]
   env        = ["CODER_AGENT_TOKEN=${coder_agent.main.token}"]
   host {
     host = "host.docker.internal"
@@ -231,4 +251,3 @@ resource "docker_container" "workspace" {
     value = data.coder_workspace.me.name
   }
 }
-
