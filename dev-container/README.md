@@ -18,5 +18,20 @@ flowchart LR
   WorkSpace2 --> CoderServer
   WorkSpace3 --> CoderServer
   CoderServer <.-> MountVolume
-  NASSMBServer --> MountVolume
+  NASSMBServer --> MountVolume ```
+
+Here is some trick it needs to make it possible:
+1. In order to make the workspace can use the volume normally, the user of the workspaces has to have same username and uid as the ownership of the volume. and the mounted volume would have same ownership as on its host, docker would simply inherit them. So i have to first create a user with the same username and uid inside WSL and mount the SMB volume with that user. 
+2. I used the following command to configure the host(WSL), and by the way it's Arch Distros :)
+```bash
+# use super user to configure the WSL system
+sudo su
+# it has to be 1001 because the default user in the workspace would have uid 1001, and they has to be the same
+useradd -m chongshun -u 1001
+usermod -aG wheel chongshun
+
+mkdir /mnt/z
+chown chongshun:chongshun /mnt/z
+
+mount -t cifs -o user=${nas_username},pass=${nas_password},$(echo uid=1001) //${NAS_IP}/${folder_name} /mnt/z
 ```

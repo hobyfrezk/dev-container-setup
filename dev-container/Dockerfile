@@ -1,3 +1,5 @@
+FROM golang:latest as go-build
+
 FROM ubuntu
 
 RUN apt-get update \
@@ -21,7 +23,7 @@ RUN apt-get update \
 	&& rm -rf /var/lib/apt/lists/*
 
 ARG USER=coder
-RUN useradd --groups sudo --no-create-home --shell /bin/bash ${USER} \
+RUN useradd --groups sudo --create-home --shell /bin/bash ${USER} \
 	&& echo "${USER} ALL=(ALL) NOPASSWD:ALL" >/etc/sudoers.d/${USER} \
 	&& chmod 0440 /etc/sudoers.d/${USER}
 
@@ -47,3 +49,8 @@ RUN LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygi
 USER ${USER}
 WORKDIR /home/${USER}
 
+RUN mkdir /home/${USER}/nas
+
+COPY --from=go-build /usr/local/go/ /home/${USER}/go/
+
+ENV PATH="/home/${USER}/go/bin:${PATH}"

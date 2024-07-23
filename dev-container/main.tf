@@ -39,29 +39,32 @@ resource "coder_agent" "main" {
     curl -fsSL https://code-server.dev/install.sh | sh -s -- --method=standalone --prefix=/tmp/code-server --version 4.19.1
     /tmp/code-server/bin/code-server --auth none --port 13337 >/tmp/code-server.log 2>&1 &
 
-    git clone --depth=1 https://github.com/Bash-it/bash-it.git ~/.bash_it \
-    && ~/.bash_it/install.sh --silent --no-modify-config
+    # use this to determin if it's first time run
+    if [ ! -d ~/.bash_it ]; then
+      git clone --depth=1 https://github.com/Bash-it/bash-it.git ~/.bash_it \
+      && ~/.bash_it/install.sh --silent --no-modify-config
 
-    # Install Oh My Zsh
-    yes | sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+      # Install Oh My Zsh
+      yes | sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
-    # Install Powerlevel10k theme
-    git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/.powerlevel10k
-    rm -rf ~/.powerlevel10k/.git
+      # Install Powerlevel10k theme
+      git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/.powerlevel10k
+      rm -rf ~/.powerlevel10k/.git
+      
+      # Clone the dotfiles repository and configure dotfiles
+      git clone https://github.com/hobyfrezk/dotfiles.git ~/.dotfiles
+      if [ -f ~/.bashrc ]; then mv ~/.bashrc ~/.bashrc.backup; fi && \
+      ln -sf ~/.dotfiles/bashrc ~/.bashrc
+      ln -sf ~/.dotfiles/p10k.zsh ~/.p10k.zsh
+      ln -sf ~/.dotfiles/zshrc ~/.zshrc
+      ln -s ~/.dotfiles/nvim ~/.config/nvim
 
-    # Clone the dotfiles repository
-    git clone https://github.com/hobyfrezk/dotfiles.git ~/.dotfiles
-
-    if [ -f ~/.bashrc ]; then mv ~/.bashrc ~/.bashrc.backup; fi && \
-    ln -sf ~/.dotfiles/bashrc ~/.bashrc
-
-    ln -sf ~/.dotfiles/p10k.zsh ~/.p10k.zsh
-    ln -sf ~/.dotfiles/zshrc ~/.zshrc
-
-    ln -s ~/.dotfiles/nvim ~/.config/nvim
-
-    # Set zsh as the default shell
-    sudo chsh -s $(which zsh) $(whoami)
+      # Other requirements to install
+      #sudo go install github.com/bootdotdev/bootdev@latest
+    
+      # Set zsh as the default shell
+      sudo chsh -s $(which zsh) $(whoami)
+    fi
   EOT
 
   # These environment variables allow you to make Git commits right away after creating a
@@ -228,7 +231,7 @@ resource "docker_container" "workspace" {
   }
 
   volumes {
-    container_path = "/home/${local.username}/CoderDevVolume"
+    container_path = "/home/${local.username}/nas"
     host_path      = "/mnt/z/HobyStore/CoderDevVolume"
     read_only      = false
   }
