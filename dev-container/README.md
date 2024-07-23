@@ -35,3 +35,12 @@ chown chongshun:chongshun /mnt/z
 
 mount -t cifs -o user=${nas_username},pass=${nas_password},$(echo uid=1001) //${NAS_IP}/${folder_name} /mnt/z
 ```
+
+Also for automatically get authenticated with Github, according to the [Documentation](https://coder.com/docs/admin/auth#github), I need to add following enviornment variables to WSL
+
+```bash
+CODER_OAUTH2_GITHUB_ALLOW_SIGNUPS=true
+CODER_OAUTH2_GITHUB_ALLOWED_ORGS="your-org"
+CODER_OAUTH2_GITHUB_CLIENT_ID="8d1...e05"
+CODER_OAUTH2_GITHUB_CLIENT_SECRET="57ebc9...02c24c"
+```
