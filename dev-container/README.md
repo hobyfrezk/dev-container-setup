@@ -44,3 +44,5 @@ CODER_OAUTH2_GITHUB_ALLOWED_ORGS="your-org"
 CODER_OAUTH2_GITHUB_CLIENT_ID="8d1...e05"
 CODER_OAUTH2_GITHUB_CLIENT_SECRET="57ebc9...02c24c"
 ```
+
+use `. /mnt/z/HobyStore/CoderVolume/github.env` to source the github credential into environment variables
