@@ -57,6 +57,7 @@ resource "coder_agent" "main" {
       ln -sf ~/.dotfiles/bashrc ~/.bashrc
       ln -sf ~/.dotfiles/p10k.zsh ~/.p10k.zsh
       ln -sf ~/.dotfiles/zshrc ~/.zshrc
+      ln -s ~/.dotfiles/gitconfig ~/.gitconfig
       ln -s ~/.dotfiles/nvim ~/.config/nvim
 
       sudo chown -R $(whoami):$(whoami) ~/go
