@@ -59,9 +59,12 @@ resource "coder_agent" "main" {
       ln -sf ~/.dotfiles/zshrc ~/.zshrc
       ln -s ~/.dotfiles/nvim ~/.config/nvim
 
+      sudo chown -R $(whoami):$(whoami) ~/go
+
       # Other requirements to install
-      #sudo go install github.com/bootdotdev/bootdev@latest
-    
+      echo "install bootdev"
+      go install github.com/bootdotdev/bootdev@latest
+
       # Set zsh as the default shell
       sudo chsh -s $(which zsh) $(whoami)
     fi
