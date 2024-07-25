@@ -3,6 +3,7 @@
 This directory contains the configuration for my dev container. It is based on the Coder self-hosted container. 
 
 The following diagram shows the architecture of the dev container. Since I want to persist my data on my NAS, I have to mount a volume in the container. This volume is mounted from NAS on the CoderServer container. The CoderServercan be userd to host multiple workspaces. 
+
 ```mermaid
 flowchart LR
   subgraph LAN
@@ -18,7 +19,8 @@ flowchart LR
   WorkSpace2 --> CoderServer
   WorkSpace3 --> CoderServer
   CoderServer <.-> MountVolume
-  NASSMBServer --> MountVolume ```
+  NASSMBServer --> MountVolume
+```
 
 Here is some trick it needs to make it possible:
 1. In order to make the workspace can use the volume normally, the user of the workspaces has to have same username and uid as the ownership of the volume. and the mounted volume would have same ownership as on its host, docker would simply inherit them. So i have to first create a user with the same username and uid inside WSL and mount the SMB volume with that user. 
