@@ -118,8 +118,14 @@ source ~/.powerlevel10k/powerlevel10k.zsh-theme
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-# start tmux automatically
-if [ -z "$TMUX" ]
-then
-    tmux attach -t TMUX || tmux new -s TMUX
+# Start tmux automatically if not already inside a tmux session
+if [ -z "$TMUX" ]; then
+    # Check if there is any existing session
+    if tmux ls &> /dev/null; then
+        # Attach to the last session used
+        tmux attach-session -t `tmux ls | cut -d: -f1 | head -n 1`
+    else
+        # Create a new session if none exists
+        tmux new-session -s default
+    fi
 fi
